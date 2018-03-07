@@ -34,11 +34,17 @@ public class FindCustomer {
         nearByCustomers.add(customer);  
       }
     }
-    Collections.sort(nearByCustomers, (u1, u2) -> u1.userId - u2.userId);
+    Collections.sort(nearByCustomers, (c1, c2) -> c1.userId - c2.userId);
     System.out.println(nearByCustomers);
 
   }
 
+  /**
+   * Returns customer array in json format
+   *
+   * @param filename The customer file name
+   * @return The customer array, in json
+   */
   @SuppressWarnings({"resource"})
   public static JSONArray readFile(String filename) {
     JSONArray jsonArray = new JSONArray();
@@ -55,17 +61,30 @@ public class FindCustomer {
     }
     return jsonArray;
   }
+
+  /**
+   * Returns the distance between two points at Harvesine formula.
+   *
+   * @param sLat The source latitude
+   * @param sLon The source longitude
+   * @param dLat The destination latitude
+   * @param dLon The destination longitude
+   * @param forePoint  The fore point
+   * @return The distance, in kilometers
+   */
   
-  public static double getDistance(double slat, double slon, double dlat, double dLon) {
+  public static double getDistance(double sLat, double sLon, double dLat, double dLon) {
 
     final int R = 6371; // earth's radius
 
-    double latDistance = Math.toRadians(dlat - slat);
-    double lonDistance = Math.toRadians(dLon - slon);
+    double latDistance = Math.toRadians(dLat - sLat);
+    double lonDistance = Math.toRadians(dLon - sLon);
+    
+    // haversine formula
     double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-        + Math.cos(Math.toRadians(slat)) * Math.cos(Math.toRadians(dlat))
+        + Math.cos(Math.toRadians(sLat)) * Math.cos(Math.toRadians(dLat))
             * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); //angular distance in radians
     double distance = R * c;
     return Math.round(distance * 100.0) / 100.0;
   }
